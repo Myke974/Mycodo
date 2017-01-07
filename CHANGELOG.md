@@ -1,15 +1,18 @@
 ## 4.1.0 (Unreleased)
 
-This release introduces a new method for upgrading Mycodo to the latest version. Upgrades will now be performed from github releases instead of commits.
+This release introduces a new method for upgrading Mycodo to the latest version. Upgrades will now be performed from github releases instead of commits, which should prevent unintended upgrades to the public, facilitate bug-tracking, and enable easier management of a changelog.
 
 Performance:
 
-  - Reduced bandwidth usage and processing of new data on live graphs
-  - Update to InfluxDB 1.1.0
+  - Add ability to hold, pause and resume PID controllers
+  - Add ability to modify PID controller parameters while active, held, or paused
+  - New method of processing data on live graphs that is more accurate and reduced bandwidth
 
 Features:
 
-  - New upgrade system to perform upgrades from github releases
+  - Add text translation ability (with Spanish as the first translation)
+  - New upgrade system to perform upgrades from github releases instead of commits
+  - Allow symbols to be used in a user password
   - Introduce changelog (CHANGELOG.md)
 
 Bugfixes:
@@ -21,6 +24,12 @@ Bugfixes:
 
 Miscellaneous:
 
+  - Add more software tests
+  - Update Flask to v0.12
+  - Update InfluxDB to v1.1.1
+  - Update factory_boy to v2.8.1
+  - Update sht_sensor to v16.12.1
+  - Change numpy from required to optional (install to use Bezier curve methods)
   - Move install files to Mycodo/install
 
 ## 4.0.26 (2016-11-23)

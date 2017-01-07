@@ -5,12 +5,12 @@
 # Usage: sudo /bin/bash Mycodo/install/setup.sh
 #
 
+INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
+
 if [ "$EUID" -ne 0 ]; then
-    printf "Please run as root: \"sudo /bin/bash Mycodo/install/setup.sh\"\n";
+    printf "Please run as root: \"sudo /bin/bash ${INSTALL_DIRECTORY}/install/setup.sh\"\n";
     exit
 fi
-
-INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
 
 LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
 exec > >(tee -i ${LOG_LOCATION})
@@ -43,11 +43,7 @@ printf "### Mycodo installation beginning at $NOW\n\n"
 printf "#### Uninstalling current version of pip\n"
 apt-get purge -y python-pip
 
-printf "#### Installing and updating prerequisites\n"
-apt-get update -y
-apt-get upgrade -y
-apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
-easy_install pip
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-packages
 pip install -U pip
 
 cd ${INSTALL_DIRECTORY}/install
@@ -69,6 +65,8 @@ pip install -r requirements.txt --upgrade
 
 rm -rf ./PIGPIO ./pigpio.zip ./wiringPi
 
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh compile-translations
+
 printf "#### Creating InfluxDB database and user\n"
 influx -execute "CREATE DATABASE mycodo_db"
 influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
@@ -81,7 +79,7 @@ apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
 ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
-printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
+printf "#### Generating SSL certificates at ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
 mkdir -p ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs
 cd ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
 

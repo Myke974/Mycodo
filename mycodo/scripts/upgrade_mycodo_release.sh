@@ -23,7 +23,6 @@ case "${1:-''}" in
           CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
           UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 4 2>&1)
           UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 4 -v 2>&1)
-          MYCODO_OLD_TMP_DIR="${INSTALL_DIRECTORY}/Mycodo-${CURRENT_VERSION}"
           MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
           TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
@@ -226,17 +225,21 @@ EOF
     'upgrade-packages')
         printf "#### Installing prerequisite apt packages.\n"
         apt-get update -y
-        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3 gawk
+        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-numpy python-setuptools python-smbus sqlite3 gawk
         easy_install pip
+    ;;
+    'compile-translations')
+        printf "#### Compiling Translations ####\n"
+        pybabel compile -d ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/translations
     ;;
     'upgrade-influxdb')
         printf "#### Upgrade influxdb if out-of-date or not installed ####\n"
         INFLUX_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
-        if [ "$INFLUX_VERSION" != "1.1.0-1" ]; then
-            echo "Incorrect version of InfluxDB installed: ($INFLUX_VERSION). Downloading and installing version 1.1.0."
-            wget https://dl.influxdata.com/influxdb/releases/influxdb_1.1.0_armhf.deb
-            dpkg -i influxdb_1.1.0_armhf.deb
-            rm -rf influxdb_1.1.0_armhf.deb
+        if [ "$INFLUX_VERSION" != "1.1.1-1" ]; then
+            echo "Outdated version of InfluxDB installed: v${INFLUX_VERSION}. Installing v1.1.1."
+            wget https://dl.influxdata.com/influxdb/releases/influxdb_1.1.1_armhf.deb
+            dpkg -i influxdb_1.1.1_armhf.deb
+            rm -rf influxdb_1.1.1_armhf.deb
         fi
     ;;
     'initialize')

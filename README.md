@@ -37,6 +37,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
 - [Backup and Restore](#backup-and-restore)
+- [Translations](#translations)
 - [Directory Structure](#directory-structure)
 - [License](#license)
 - [Screenshots](#screenshots)
@@ -61,6 +62,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 * I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same I<sup>2</sup>C address.
 * Pi Camera support: Stream live video, capture still images, or create time-lapses.
 * Automated system upgrade: When there's new release on github, an upgrade can be initiated from the web UI.
+* Languages: English and Spanish.
 
 
 
@@ -102,6 +104,7 @@ cd ~
 wget -O mycodo-latest.tar.gz https://api.github.com/repos/kizniche/mycodo/tarball
 mkdir Mycodo
 tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
+rm -f mycodo-latest.tar.gz
 cd Mycodo/install
 sudo /bin/bash ./setup.sh
 ```
@@ -327,6 +330,42 @@ You could also copy the influx databases and just copy the entire Mycodo directo
 
 
 
+### Translations
+
+Translation support has been added but there is currently a lack of translations. If you know another language and would like to create translations, follow the steps below.
+
+To create your own translation, use the following commands.
+
+```cd ~/Mycodo/mycodo```
+
+Create a messages.pot file from searching all files that contain translatable text.
+
+```pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .```
+
+Create the translation for the new language (in this case it is 'es' for Spanish).
+
+```pybabel init -i messages.pot -d mycodo_flask/translations -l es```
+
+There will now be the file 'messages.po' created in ~/Mycodo/mycodo/mycodo_flask/translations/es/LC_MESSAGES/
+
+Edit messages.po (I used [poedit](https://poedit.net/)) to edit and save the translation for each translatable word or phrase.
+
+Finally, compile the new translation.
+
+```pybabel compile -d mycodo_flask/translations```
+
+If you would like to rescan for translatable text and update your language's messages.po file without losing your previous translation work, use the following commands instead of the above commands. Then edit with poedit and compile for it to take effect.
+
+```
+pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .
+pybabel update -i messages.pot -d mycodo_flask/translations
+pybabel compile -d mycodo_flask/translations
+```
+
+Refer to [The Flask Mega-Tutorial, Part XIV: I18n and L10n](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiv-i18n-and-l10n) for more details of this process.
+
+
+
 ### Directory Structure
 
 This is the file structure of Mycodo, so it may assist anyone to understand or modify the system. I'll try to keep this current.
@@ -377,30 +416,32 @@ Mycodo/
 │   │   ├── settings_routes.py - Settings page routes
 │   │   ├── ssl_certs - Location of HTTP SSL certificates
 │   │   ├── static - Static files reside (images, css, js, etc.)
-│   │   └── templates - Flask HTML templates
-│   │       ├── 404.html
-│   │       ├── flash_messages.html - Error message handler
-│   │       ├── layout.html - Template for pages/, settings/, /tools
-│   │       ├── layout-remote.html - Template for /remote
-│   │       ├── layout-settings.html - Template for /settings
-│   │       ├── login.html - Login page
-│   │       ├── manual.html - Mycodo usage manual
-│   │       ├── pages - Flask general pages
-│   │       │   ├── graph.html - Graph display age
-│   │       │   ├── live.html - Live data display page
-│   │       │   ├── sensor.html - Sensor configuration page
-│   │       │   └── ...
-│   │       ├── remote - Future remote administration panel
-│   │       │   └── setup.html - Add or check the status of remote systems
-│   │       ├── settings - Flask settings pages
-│   │       │   ├── alerts.html - Alerts settings page
-│   │       │   ├── users.html - Users settings page
-│   │       │   └── ...
-│   │       └── tools - Various tools for Mycodo
-│   │           ├── info.html - Information about your system
-│   │           ├── logview.html - Display log files
-│   │           ├── usage.html - Calculate relay usage/power consumtion
-│   │           └── ...
+│   │   ├── templates - Flask HTML templates
+│   │   │   ├── 404.html
+│   │   │   ├── flash_messages.html - Error message handler
+│   │   │   ├── layout.html - Template for pages/, settings/, /tools
+│   │   │   ├── layout-remote.html - Template for /remote
+│   │   │   ├── layout-settings.html - Template for /settings
+│   │   │   ├── login.html - Login page
+│   │   │   ├── manual.html - Mycodo usage manual
+│   │   │   ├── admin - Flask admin pages
+│   │   │   ├── pages - Flask general pages
+│   │   │   │   ├── graph.html - Graph display age
+│   │   │   │   ├── live.html - Live data display page
+│   │   │   │   ├── sensor.html - Sensor configuration page
+│   │   │   │   └── ...
+│   │   │   ├── remote - Future remote administration panel
+│   │   │   │   └── setup.html - Add or check the status of remote systems
+│   │   │   ├── settings - Flask settings pages
+│   │   │   │   ├── alerts.html - Alerts settings page
+│   │   │   │   ├── users.html - Users settings page
+│   │   │   │   └── ...
+│   │   │   └── tools - Various tools for Mycodo
+│   │   │       ├── info.html - Information about your system
+│   │   │       ├── logview.html - Display log files
+│   │   │       ├── usage.html - Calculate relay usage/power consumtion
+│   │   │       └── ...
+│   │   └── translations - Language translations
 │   ├── mycodo_client.py - Communicates with the running daemon
 │   ├── mycodo_daemon.py - Mycodo daemon (core of the system)
 │   ├── start_flask_ui.py - Flask startup script
