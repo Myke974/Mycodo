@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Mycodo 
 
 ## Environmental Regulation System
@@ -217,3 +218,6 @@ The following sections can be found in the wiki.
  - [Sensors and Devices](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
  - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
  - [User Roles](https://github.com/kizniche/Mycodo/wiki/User-Roles)
+=======
+# NOT FOR USE ! !
+>>>>>>> refs/remotes/origin/master
